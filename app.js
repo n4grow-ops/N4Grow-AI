@@ -671,3 +671,64 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPortal();
     }
 });
+// ==========================================
+// ADICIONE ESTE CÓDIGO AO FINAL DO app.js
+// ==========================================
+
+/**
+ * Força re-inicialização dos handlers mobile após renderForm
+ * Sobrescreve a função renderForm original
+ */
+const originalRenderForm = renderForm;
+renderForm = function() {
+    originalRenderForm();
+    
+    // Aguarda o DOM estar completamente pronto
+    setTimeout(() => {
+        if (typeof setupMobileInputHandlers === 'function') {
+            setupMobileInputHandlers();
+            console.log('✅ Mobile handlers ativados após renderForm');
+        }
+    }, 300);
+};
+
+/**
+ * Fallback adicional: monitora mudanças no formulário
+ */
+function initMobileFormWatcher() {
+    const checkAndInit = () => {
+        const form = document.getElementById('recruitmentForm');
+        if (form && typeof setupMobileInputHandlers === 'function') {
+            setupMobileInputHandlers();
+        }
+    };
+    
+    // Verifica a cada 500ms se o form foi criado
+    const interval = setInterval(() => {
+        const form = document.getElementById('recruitmentForm');
+        if (form) {
+            checkAndInit();
+            clearInterval(interval);
+        }
+    }, 500);
+    
+    // Para de verificar após 10 segundos
+    setTimeout(() => clearInterval(interval), 10000);
+}
+
+// Inicia watcher ao carregar
+document.addEventListener('DOMContentLoaded', initMobileFormWatcher);
+
+/**
+ * Debug helper para mobile - adicione temporariamente
+ * Remove após confirmar que está funcionando
+ */
+if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    console.log('📱 Dispositivo mobile detectado');
+    console.log('UserAgent:', navigator.userAgent);
+    
+    // Log de toques na tela
+    document.addEventListener('touchstart', (e) => {
+        console.log('👆 Touch detectado em:', e.target.tagName, e.target.className);
+    }, { passive: true });
+}
