@@ -296,8 +296,14 @@ function renderForm() {
                     <div class="form-group">
                         <label>Idade <span>*</span></label>
                         <div class="radio-group">
-                            <label class="radio-option"><input type="radio" name="age" value="Menos de 18" required> Menos de 18</label>
-                            <label class="radio-option"><input type="radio" name="age" value="18 ou mais"> 18 ou mais</label>
+                            <div class="radio-option">
+                                <input type="radio" id="age_under18" name="age" value="Menos de 18" required>
+                                <label for="age_under18">Menos de 18</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="age_18plus" name="age" value="18 ou mais">
+                                <label for="age_18plus">18 ou mais</label>
+                            </div>
                         </div>
                         <span class="error-msg" id="error-age">Selecione uma opção</span>
                     </div>
@@ -307,10 +313,10 @@ function renderForm() {
                 <div class="form-section">
                     <h4>Redes Sociais (Aviso)</h4>
                     <div class="form-group">
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="socialConsent" required>
-                            Minhas redes sociais podem estar abertas/públicas e autorizo a análise do perfil para fins de seleção.
-                        </label>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="socialConsent" name="socialConsent" required>
+                            <label for="socialConsent">Minhas redes sociais podem estar abertas/públicas e autorizo a análise do perfil para fins de seleção.</label>
+                        </div>
                         <span class="error-msg" id="error-socialConsent">Você deve autorizar para prosseguir</span>
                     </div>
                 </div>
@@ -321,18 +327,39 @@ function renderForm() {
                     <div class="form-group">
                         <label>Prestador de serviço (PJ/MEI)? <span>*</span></label>
                         <div class="radio-group">
-                            <label class="radio-option"><input type="radio" name="workType" value="Já tenho MEI" required> Já tenho MEI</label>
-                            <label class="radio-option"><input type="radio" name="workType" value="Posso abrir MEI"> Posso abrir MEI</label>
-                            <label class="radio-option"><input type="radio" name="workType" value="Não posso"> Não posso</label>
+                            <div class="radio-option">
+                                <input type="radio" id="work_mei" name="workType" value="Já tenho MEI" required>
+                                <label for="work_mei">Já tenho MEI</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="work_can" name="workType" value="Posso abrir MEI">
+                                <label for="work_can">Posso abrir MEI</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="work_cant" name="workType" value="Não posso">
+                                <label for="work_cant">Não posso</label>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Disponibilidade semanal <span>*</span></label>
                         <div class="radio-group">
-                            <label class="radio-option"><input type="radio" name="availability" value="Até 10h" required> Até 10h</label>
-                            <label class="radio-option"><input type="radio" name="availability" value="10–20h"> 10–20h</label>
-                            <label class="radio-option"><input type="radio" name="availability" value="20–30h"> 20–30h</label>
-                            <label class="radio-option"><input type="radio" name="availability" value="30h+"> 30h+</label>
+                            <div class="radio-option">
+                                <input type="radio" id="avail_10" name="availability" value="Até 10h" required>
+                                <label for="avail_10">Até 10h</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="avail_20" name="availability" value="10–20h">
+                                <label for="avail_20">10–20h</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="avail_30" name="availability" value="20–30h">
+                                <label for="avail_30">20–30h</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="avail_30plus" name="availability" value="30h+">
+                                <label for="avail_30plus">30h+</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -358,9 +385,6 @@ function renderForm() {
         handleSubmit(form);
     });
 
-    // Setup mobile-friendly touch handlers
-    setupMobileInputHandlers();
-
     // Limpar erros ao digitar
     form.querySelectorAll('input, select, textarea').forEach(el => {
         el.addEventListener('input', () => {
@@ -375,26 +399,49 @@ function renderQuestion(q) {
         <label>${q.label} ${q.required ? '<span>*</span>' : ''}</label>`;
 
     if (q.type === 'radio') {
-        content += `<div class="radio-group">${q.options.map(opt => `
-            <label class="radio-option"><input type="radio" name="${q.id}" value="${opt}" ${q.required ? 'required' : ''}> ${opt}</label>
-        `).join('')}</div>`;
+        content += `<div class="radio-group">`;
+        q.options.forEach((opt, idx) => {
+            const uniqueId = `${q.id}_opt${idx}`;
+            content += `
+            <div class="radio-option">
+                <input type="radio" id="${uniqueId}" name="${q.id}" value="${opt}" ${q.required ? 'required' : ''}>
+                <label for="${uniqueId}">${opt}</label>
+            </div>`;
+        });
+        content += `</div>`;
         if (q.hasOther) content += `<input type="text" name="${q.id}_other" placeholder="Especifique..." style="display:none; margin-top:10px;">`;
     } else if (q.type === 'checkbox') {
-        content += `<div class="checkbox-group">${q.options.map(opt => `
-            <label class="checkbox-option"><input type="checkbox" name="${q.id}" value="${opt}"> ${opt}</label>
-        `).join('')}</div>`;
+        content += `<div class="checkbox-group">`;
+        q.options.forEach((opt, idx) => {
+            const uniqueId = `${q.id}_opt${idx}`;
+            content += `
+            <div class="checkbox-option">
+                <input type="checkbox" id="${uniqueId}" name="${q.id}" value="${opt}">
+                <label for="${uniqueId}">${opt}</label>
+            </div>`;
+        });
+        content += `</div>`;
         if (q.hasOther) content += `<input type="text" name="${q.id}_other" placeholder="Especifique..." style="display:none; margin-top:10px;">`;
     } else if (q.type === 'short') {
         content += `<textarea name="${q.id}" rows="2" ${q.required ? 'required' : ''}></textarea>`;
     } else if (q.type === 'group_radio') {
-        content += `<div class="group-radio-table">${q.items.map(item => `
+        content += `<div class="group-radio-table">`;
+        q.items.forEach(item => {
+            content += `
             <div style="margin-bottom:10px;">
                 <p style="font-size:0.9rem; margin-bottom:5px;">${item}</p>
-                <div class="radio-group" style="flex-direction:row; gap:20px;">
-                    ${q.options.map(opt => `<label class="radio-option"><input type="radio" name="${q.id}_${item}" value="${opt}" required> ${opt}</label>`).join('')}
-                </div>
-            </div>
-        `).join('')}</div>`;
+                <div class="radio-group" style="flex-direction:row; gap:20px;">`;
+            q.options.forEach((opt, idx) => {
+                const uniqueId = `${q.id}_${item.replace(/\s+/g, '_')}_opt${idx}`;
+                content += `
+                <div class="radio-option">
+                    <input type="radio" id="${uniqueId}" name="${q.id}_${item}" value="${opt}" required>
+                    <label for="${uniqueId}">${opt}</label>
+                </div>`;
+            });
+            content += `</div></div>`;
+        });
+        content += `</div>`;
     }
 
     content += `<span class="error-msg" id="error-${q.id}">Este campo deve ter pelo menos 5 caracteres</span></div>`;
@@ -608,60 +655,6 @@ function initDroplets() {
 
         container.appendChild(droplet);
     }
-}
-
-/**
- * Setup Mobile-Friendly Input Handlers
- * Forces checkboxes and radios to respond to label clicks on mobile
- */
-function setupMobileInputHandlers() {
-    // Wait for DOM to be ready
-    setTimeout(() => {
-        const allOptions = document.querySelectorAll('.radio-option, .checkbox-option');
-
-        allOptions.forEach(container => {
-            const input = container.querySelector('input[type="radio"], input[type="checkbox"]');
-
-            if (!input) return;
-
-            // Remove default behavior and handle manually
-            container.style.cursor = 'pointer';
-
-            // Add click handler to the entire container
-            container.addEventListener('click', (e) => {
-                // Don't prevent default if clicking directly on input
-                if (e.target === input) return;
-
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (input.type === 'radio') {
-                    input.checked = true;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                } else if (input.type === 'checkbox') {
-                    input.checked = !input.checked;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            });
-
-            // Add touch handler for better mobile support
-            container.addEventListener('touchend', (e) => {
-                // Don't prevent if touching the input directly
-                if (e.target === input) return;
-
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (input.type === 'radio') {
-                    input.checked = true;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                } else if (input.type === 'checkbox') {
-                    input.checked = !input.checked;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            }, { passive: false });
-        });
-    }, 150);
 }
 
 // Início
