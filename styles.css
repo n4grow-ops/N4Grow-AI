@@ -571,3 +571,126 @@ input[type="checkbox"] {
         transition-duration: 0s !important;
     }
 }
+/* Adicione estas regras ao final do seu styles.css */
+
+/* ========================================
+   FIX CRÍTICO MOBILE - iOS e Android
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Remove TODOS os overlays que bloqueiam toque */
+    .radio-option *,
+    .checkbox-option * {
+        pointer-events: auto !important;
+    }
+    
+    /* Container principal - MÁXIMA PRIORIDADE */
+    .radio-option,
+    .checkbox-option {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 18px 20px !important;
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 2px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 14px !important;
+        margin-bottom: 12px !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 1 !important;
+        
+        /* Força área de toque */
+        min-height: 64px !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: rgba(16, 185, 129, 0.2) !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        
+        /* Remove transformações que podem causar problemas */
+        transform: none !important;
+        transition: background 0.2s ease, border-color 0.2s ease !important;
+    }
+    
+    /* Estado ativo/tocado */
+    .radio-option:active,
+    .checkbox-option:active {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border-color: rgba(16, 185, 129, 0.5) !important;
+    }
+    
+    /* Input - MAIOR e mais acessível */
+    .radio-option input[type="radio"],
+    .radio-option input[type="checkbox"],
+    .checkbox-option input[type="radio"],
+    .checkbox-option input[type="checkbox"] {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 2 !important;
+        
+        /* Força aparência nativa */
+        -webkit-appearance: auto !important;
+        appearance: auto !important;
+        
+        /* Garante que seja tocável */
+        pointer-events: auto !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* Label/Span - ocupa espaço restante */
+    .radio-option span,
+    .checkbox-option span,
+    .radio-option label,
+    .checkbox-option label {
+        flex: 1 !important;
+        font-size: 1.05rem !important;
+        line-height: 1.4 !important;
+        color: #ffffff !important;
+        cursor: pointer !important;
+        pointer-events: none !important; /* Deixa o container lidar com o toque */
+    }
+    
+    /* Remove hover no mobile */
+    .radio-option:hover,
+    .checkbox-option:hover {
+        transform: none !important;
+    }
+    
+    /* Grupos de radio/checkbox */
+    .radio-group,
+    .checkbox-group {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+    
+    /* CRITICAL: Remove qualquer elemento que possa estar bloqueando */
+    .radio-option::before,
+    .radio-option::after,
+    .checkbox-option::before,
+    .checkbox-option::after {
+        display: none !important;
+    }
+}
+
+/* Para dispositivos com tela de toque (detecta touch capability) */
+@media (hover: none) and (pointer: coarse) {
+    .radio-option,
+    .checkbox-option {
+        min-height: 70px !important; /* Área ainda maior em dispositivos touch */
+    }
+    
+    .radio-option input,
+    .checkbox-option input {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+}
