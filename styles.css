@@ -491,14 +491,12 @@ input[type="checkbox"] {
         font-size: 2rem;
     }
 
-    /* CRITICAL MOBILE FIX: Remove backdrop-filter as it blocks touch events on many mobile browsers */
+    /* Remove backdrop-filter for better mobile performance */
     .form-section,
-    .role-card,
-    .toast {
+    .role-card {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background: #11181c !important;
-        /* Solid background for mobile */
+        background: #11181c;
     }
 
     .form-section {
@@ -509,38 +507,39 @@ input[type="checkbox"] {
         padding: 20px;
     }
 
-    /* Ensure labels are the primary touch target and propagate clicks to inputs */
+    /* Clean option styling for mobile */
     .radio-option,
     .checkbox-option {
-        padding: 20px 24px !important;
-        margin-bottom: 12px !important;
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        display: flex !important;
-        align-items: center !important;
-        cursor: pointer !important;
-        z-index: 100 !important;
-        position: relative !important;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
     }
 
-    /* Prevent hidden background elements from catching touches */
-    #droplets-container,
-    .droplet {
-        display: none !important;
-        visibility: hidden !important;
-    }
-
-    /* Disable droplet animation on mobile to save CPU and prevent touch bugs */
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-    }
-
-    /* Make the actual checkbox/radio slightly larger */
+    /* Make inputs clearly visible */
     input[type="radio"],
     input[type="checkbox"] {
-        width: 25px !important;
-        height: 25px !important;
-        margin-right: 15px !important;
-        cursor: pointer !important;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    /* Make labels fill space and be clearly tappable */
+    .radio-option label,
+    .checkbox-option label {
+        flex: 1;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    /* Hide droplets on mobile to prevent interference */
+    #droplets-container {
+        display: none !important;
     }
 }
